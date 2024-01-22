@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 
 class DishBase(BaseModel):
@@ -12,7 +12,7 @@ class DishCreate(DishBase):
 
 
 class Dish(DishBase):
-    id: int
+    id: UUID4
     submenu_id: int
 
     class Config:
@@ -29,7 +29,7 @@ class SubmenuCreate(SubmenuBase):
 
 
 class Submenu(SubmenuBase):
-    id: int
+    id: UUID4
     dishes: list[Dish] = []
 
     class Config:
@@ -46,7 +46,7 @@ class MenuCreate(MenuBase):
 
 
 class Menu(MenuBase):
-    id: int
+    id: UUID4
     submenus: list[Submenu] = []
 
     class Config:

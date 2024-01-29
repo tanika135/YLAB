@@ -67,3 +67,8 @@ def delete_submenu(db: Session, submenu_id: str):
     db.commit()
     return db_submenu
 
+
+def get_dishes(db: Session, submenu_id: str):
+    return db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).all()
+
+

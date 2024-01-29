@@ -97,3 +97,9 @@ async def delete_submenu(submenu_id: str, db: Session = Depends(get_db)):
     return db_submenu
 
 
+@app.get("/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes", response_model=list[schemas.Dish])
+async def get_dishes(submenu_id: str, db: Session = Depends(get_db)):
+    db_submenu = crud.get_dishes(db, submenu_id)
+    if db_submenu is None:
+        raise HTTPException(status_code=404, detail="submenu not found")
+    return db_submenu

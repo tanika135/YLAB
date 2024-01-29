@@ -50,3 +50,14 @@ def create_submenu(db: Session, menu_id: str, submenu: schemas):
 
 def get_submenu(db: Session, submenu_id: str):
     return db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+
+
+def update_submenu(db: Session, submenu_id: str, submenu: schemas.SubmenuCreate):
+    db_submenu = db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+    db_submenu.title = submenu.title
+    db_submenu.description = submenu.description
+    db.commit()
+    db.refresh(db_submenu)
+    return db_submenu
+
+

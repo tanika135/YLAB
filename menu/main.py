@@ -74,10 +74,20 @@ async def create_submenu(menu_id: str, submenu: schemas.SubmenuCreate, db: Sessi
 
 
 @app.get("/api/v1/menus/{menu_id}/submenus/{submenu_id}", response_model=schemas.Submenu)
-async def get_submenu(menu_id: str, submenu_id: str, db: Session = Depends(get_db)):
+async def get_submenu(submenu_id: str, db: Session = Depends(get_db)):
     db_submenu = crud.get_submenu(db, submenu_id)
     if db_submenu is None:
         raise HTTPException(status_code=404, detail="submenu not found")
     return db_submenu
+
+
+@app.patch("/api/v1/menus/{menu_id}/submenus/{submenu_id}", response_model=schemas.Submenu)
+async def update_submenu(submenu_id: str, submenu: schemas.SubmenuCreate, db: Session = Depends(get_db)):
+    db_submenu = crud.update_submenu(db, submenu_id, submenu)
+    if db_submenu is None:
+        raise HTTPException(status_code=404, detail="submenu not found")
+    return db_submenu
+
+
 
 

@@ -89,5 +89,11 @@ async def update_submenu(submenu_id: str, submenu: schemas.SubmenuCreate, db: Se
     return db_submenu
 
 
+@app.delete("/api/v1/menus/{menu_id}/submenus/{submenu_id}", response_model=schemas.Submenu)
+async def delete_submenu(submenu_id: str, db: Session = Depends(get_db)):
+    db_submenu = crud.delete_submenu(db, submenu_id)
+    if db_submenu is None:
+        raise HTTPException(status_code=404, detail="submenu not found")
+    return db_submenu
 
 

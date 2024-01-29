@@ -61,3 +61,9 @@ def update_submenu(db: Session, submenu_id: str, submenu: schemas.SubmenuCreate)
     return db_submenu
 
 
+def delete_submenu(db: Session, submenu_id: str):
+    db_submenu = db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+    db.delete(db_submenu)
+    db.commit()
+    return db_submenu
+

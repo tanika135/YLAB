@@ -38,3 +38,15 @@ def delete_menu(db: Session, menu_id: str):
 def get_submenus(db: Session, menu_id: str):
     return db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all()
 
+
+def create_submenu(db: Session, menu_id: str, submenu: schemas):
+    db_submenu = models.Submenu(**submenu.model_dump())
+    db_submenu.menu_id = menu_id
+    db.add(db_submenu)
+    db.commit()
+    db.refresh(db_submenu)
+    return db_submenu
+
+
+def get_submenu(db: Session, submenu_id: str):
+    return db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()

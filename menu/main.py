@@ -66,3 +66,18 @@ async def get_submenus(menu_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="menu not found")
     return db_menu
 
+
+@app.post("/api/v1/menus/{menu_id}/submenus", response_model=schemas.Menu, status_code=201)
+async def create_submenu(menu_id: str, submenu: schemas.SubmenuCreate, db: Session = Depends(get_db)):
+    db_submenu = crud.create_submenu(db, menu_id, submenu)
+    return db_submenu
+
+
+@app.get("/api/v1/menus/{menu_id}/submenus/{submenu_id}", response_model=schemas.Submenu)
+async def get_submenu(menu_id: str, submenu_id: str, db: Session = Depends(get_db)):
+    db_submenu = crud.get_submenu(db, submenu_id)
+    if db_submenu is None:
+        raise HTTPException(status_code=404, detail="submenu not found")
+    return db_submenu
+
+

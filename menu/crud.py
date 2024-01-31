@@ -72,3 +72,32 @@ def get_dishes(db: Session, submenu_id: str):
     return db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).all()
 
 
+def create_dish(db: Session, submenu_id: str, dish: schemas.DishCreate):
+    db_dish = models.Dish(**dish.model_dump())
+    db_dish.submenu_id = submenu_id
+    db.add(db_dish)
+    db.commit()
+    db.refresh(db_dish)
+    return db_dish
+
+
+def get_dish(db: Session, dish_id: str):
+    return db.query(models.Dish).filter(models.Dish.id == dish_id).first()
+
+
+def update_dish(db: Session, dish_id: str, dish: schemas.DishCreate):
+    db_dish = db.query(models.Dish).filter(models.Dish.id == dish_id).first()
+    db_dish.title = dish.title
+    db_dish.description = dish.description
+    db_dish.price = dish.price
+    db.commit()
+    db.refresh(db_dish)
+    return db_dish
+
+
+def delete_dish(db: Session, dish_id: str):
+    db_dish = db.query(models.Dish).filter(models.Dish.id == dish_id).first()
+    db.delete(db_dish)
+    db.commit()
+    return db_dish
+

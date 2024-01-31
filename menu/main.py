@@ -103,3 +103,33 @@ async def get_dishes(submenu_id: str, db: Session = Depends(get_db)):
     if db_submenu is None:
         raise HTTPException(status_code=404, detail="submenu not found")
     return db_submenu
+
+
+@app.post("/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes", response_model=schemas.Dish, status_code=201)
+async def create_dish(submenu_id: str, dish: schemas.DishCreate, db: Session = Depends(get_db)):
+    db_dish = crud.create_dish(db, submenu_id, dish)
+    return db_dish
+
+
+@app.get("/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}", response_model=schemas.Dish)
+async def get_dish(dish_id: str, db: Session = Depends(get_db)):
+    db_dish = crud.get_dish(db, dish_id)
+    if db_dish is None:
+        raise HTTPException(status_code=404, detail="dish not found")
+    return db_dish
+
+
+@app.patch("/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}", response_model=schemas.Dish)
+async def update_dish(dish_id: str, dish: schemas.DishCreate, db: Session = Depends(get_db)):
+    db_dish = crud.update_dish(db, dish_id, dish)
+    if db_dish is None:
+        raise HTTPException(status_code=404, detail="dish not found")
+    return db_dish
+
+
+@app.delete("/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}", response_model=schemas.Dish)
+async def delete_dish(dish_id: str, db: Session = Depends(get_db)):
+    db_dish = crud.delete_dish(db, dish_id)
+    if db_dish is None:
+        raise HTTPException(status_code=404, detail="dish not found")
+    return db_dish

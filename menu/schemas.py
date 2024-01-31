@@ -1,10 +1,11 @@
 from pydantic import BaseModel, UUID4
+from decimal import Decimal
 
 
 class DishBase(BaseModel):
     title: str
     description: str | None = None
-    price: float
+    price: Decimal
 
 
 class DishCreate(DishBase):
@@ -13,7 +14,7 @@ class DishCreate(DishBase):
 
 class Dish(DishBase):
     id: UUID4
-    submenu_id: int
+    submenu_id: UUID4
 
     class Config:
         orm_mode = True

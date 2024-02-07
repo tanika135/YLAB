@@ -37,6 +37,10 @@ class Submenu(SubmenuBase):
         orm_mode = True
 
 
+class SubmenuResponse(Submenu):
+    dishes_count: int
+
+
 class MenuBase(BaseModel):
     title: str
     description: str | None = None
@@ -53,3 +57,7 @@ class Menu(MenuBase):
     class Config:
         orm_mode = True
 
+
+class MenuResponse(Menu):
+    submenus_count: int
+    dishes_count: int

@@ -1,6 +1,9 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
-
+from sqlalchemy import func
+from .models import Menu, Submenu, Dish
 from . import models, schemas
+from .database import SessionLocal
 
 
 def get_menus(db: Session):
@@ -15,9 +18,25 @@ def create_menu(db: Session, menu: schemas.MenuCreate):
     return db_menu
 
 
-def get_menu(db: Session, menu_id: str):
-    return db.query(models.Menu).filter(models.Menu.id == menu_id).first()
 
+def get_menu(db: Session, menu_id: str):
+    # return db.query(models.Menu).filter(models.Menu.id == menu_id).first()
+    with SessionLocal() as session:
+        menu = session.query(Menu).filter(Menu.id == menu_id).first()
+        if menu is None:
+            raise HTTPException(status_code=404, detail="menu not found")
+        submenus = session.query(Submenu).filter(Submenu.menu_id == menu_id).all()
+        submenus_count = len(submenus)
+        dishes_count = sum(
+            session.query(func.count(Dish.id)).filter(Dish.submenu_id == submenu.id).scalar() for submenu in submenus)
+        menu_dict = {
+            "id": menu.id,
+            "title": menu.title,
+            "description": menu.description,
+            "submenus_count": submenus_count,
+            "dishes_count": dishes_count,
+        }
+        return menu_dict
 
 def update_menu(db: Session, menu_id: str, menu: schemas.MenuCreate):
     db_menu = db.query(models.Menu).filter(models.Menu.id == menu_id).first()
@@ -49,7 +68,21 @@ def create_submenu(db: Session, menu_id: str, submenu: schemas):
 
 
 def get_submenu(db: Session, submenu_id: str):
-    return db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+    # return db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+    with SessionLocal() as session:
+        submenu = session.query(Submenu).filter(Submenu.id == submenu_id).first()
+        if submenu is None:
+            raise HTTPException(status_code=404, detail="submenu not found")
+        dishes = session.query(Dish).filter(Dish.submenu_id == submenu_id).all()
+        dishes_count = len(dishes)
+        submenu_dict = {
+            "id": submenu.id,
+            "title": submenu.title,
+            "description": submenu.description,
+            "menu_id": submenu.menu_id,
+            "dishes_count": dishes_count,
+        }
+        return submenu_dict
 
 
 def update_submenu(db: Session, submenu_id: str, submenu: schemas.SubmenuCreate):

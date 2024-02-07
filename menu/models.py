@@ -13,7 +13,7 @@ class Menu(Base):
     title = Column(String)
     description = Column(String)
 
-    submenus = relationship("Submenu", back_populates="menu")
+    submenus = relationship("Submenu", back_populates="menu", cascade='save-update, merge, delete, delete-orphan')
 
 
 class Submenu(Base):
@@ -25,7 +25,7 @@ class Submenu(Base):
     menu_id = Column(UUID, ForeignKey("menu.id"))
 
     menu = relationship("Menu", back_populates="submenus")
-    dishes = relationship("Dish", back_populates="submenu")
+    dishes = relationship("Dish", back_populates="submenu", cascade='save-update, merge, delete, delete-orphan')
 
 
 class Dish(Base):

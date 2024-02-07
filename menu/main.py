@@ -1,8 +1,10 @@
 from fastapi import Depends, FastAPI, HTTPException
+
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -35,12 +37,11 @@ async def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
     return db_menu
 
 
-@app.get("/api/v1/menus/{menu_id}", response_model=schemas.Menu)
+@app.get("/api/v1/menus/{menu_id}", response_model=schemas.MenuResponse)
 async def get_menu(menu_id: str, db: Session = Depends(get_db)):
     db_menu = crud.get_menu(db, menu_id)
-    if db_menu is None:
-        raise HTTPException(status_code=404, detail="menu not found")
     return db_menu
+
 
 
 @app.patch("/api/v1/menus/{menu_id}", response_model=schemas.Menu)
@@ -73,11 +74,11 @@ async def create_submenu(menu_id: str, submenu: schemas.SubmenuCreate, db: Sessi
     return db_submenu
 
 
-@app.get("/api/v1/menus/{menu_id}/submenus/{submenu_id}", response_model=schemas.Submenu)
+@app.get("/api/v1/menus/{menu_id}/submenus/{submenu_id}", response_model=schemas.SubmenuResponse)
 async def get_submenu(submenu_id: str, db: Session = Depends(get_db)):
     db_submenu = crud.get_submenu(db, submenu_id)
-    if db_submenu is None:
-        raise HTTPException(status_code=404, detail="submenu not found")
+    # if db_submenu is None:
+    #     raise HTTPException(status_code=404, detail="submenu not found")
     return db_submenu
 
 
